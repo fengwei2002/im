@@ -40,9 +40,9 @@ func (a Action) ActionName() string {
 }
 
 type Message struct {
-	req      string
-	action   Action
-	response any
+	Req    string
+	Action Action
+	Data   interface{}
 }
 
 // DeserializeMessage 将二进制数据流序列化为 Message 的格式

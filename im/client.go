@@ -4,9 +4,12 @@ package im
 用于创建客户端的连接
 拥有 用户 uid 设备 id 创建的时间，以及 消息 channel， 默认开 200 个
 */
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-// Client represent a user client connection
+// Client represent a user client conn
 type Client struct {
 	conn Connection
 
@@ -26,21 +29,38 @@ func NewClient(conn Connection) *Client {
 	return client
 }
 
-// ReadMessage 从
-func (c *Client) ReadMessage() {
+func (c *Client) readMessage() {
+	defer func() {
+		err := recover()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
 	for {
 		message, err := c.conn.Read()
 		if err != nil {
 			//
 			continue
 		}
-		if message.action.IsApi() {
+		if message.Action.IsApi() {
+
+		} else if message.Action.IsHeartbeat() {
+
+		} else if message.Action.IsMessage() {
 
 		}
 	}
 }
 
-func (c *Client) WriteMessage() {
+func (c *Client) deliver() {
+
+}
+
+func (c *Client) IsOnline() bool {
+	return false
+}
+
+func (c *Client) writeMessage() {
 	for {
 		select {
 		case message := <-c.messages:
@@ -53,6 +73,6 @@ func (c *Client) WriteMessage() {
 }
 
 func (c *Client) Run() {
-	go c.ReadMessage()
-	go c.WriteMessage()
+	go c.readMessage()
+	go c.writeMessage()
 }

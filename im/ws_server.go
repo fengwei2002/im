@@ -53,7 +53,7 @@ func (ws *WsServer) handleWebSocketRequest(writer http.ResponseWriter, request *
 
 	conn, err := ws.upgrader.Upgrade(writer, request, nil)
 	if err != nil {
-
+		logger.E("upgrade http to ws error", err)
 		return
 	}
 
@@ -61,12 +61,12 @@ func (ws *WsServer) handleWebSocketRequest(writer http.ResponseWriter, request *
 	NewClient(con).Run()
 }
 
-// Start 启动一个 WebSocket 的服务
-func (ws *WsServer) Start() {
+func (ws *WsServer) Run() {
 
 	http.HandleFunc("/ws", ws.handleWebSocketRequest)
 
 	addr := fmt.Sprintf("%s:%d", ws.options.Host, ws.options.Port)
+	fmt.Printf("websocket run on %s\n", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		panic(err)
 	}
